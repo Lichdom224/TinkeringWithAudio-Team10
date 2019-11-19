@@ -12,7 +12,7 @@ public class AudioTinker : MonoBehaviour {
 
     private AudioSource audioSource;
 	private AudioClip audioClip;
-	private int freq = 50;
+	private float freq = 50;
     
     // Start is called before the first frame update
     void Start() {
@@ -36,15 +36,16 @@ public class AudioTinker : MonoBehaviour {
 	{
 		if (!audioSource.isPlaying)
 		{
-			freq += Random.Range(1, 200);
+			/*freq += Random.Range(1, 200);
 			audioClip = CreateToneAudioClip(freq);
-			audioSource.PlayOneShot(audioClip);
+			audioSource.PlayOneShot(audioClip);*/
+			playChord(ChordGen());
 		}
 	}
     
     
     // Private 
-    private AudioClip CreateToneAudioClip(int frequency) {
+    private AudioClip CreateToneAudioClip(float frequency) {
         int sampleDurationSecs = 3;
         int sampleRate = 44100;
         int sampleLength = sampleRate * sampleDurationSecs;
@@ -62,6 +63,58 @@ public class AudioTinker : MonoBehaviour {
         audioClip.SetData(samples, 0);
         return audioClip;
     }
+
+	private float Notes(float noteNum)
+	{
+		float frequency = 440 * Mathf.Pow(2.0f, (noteNum/12.0f));
+		return (frequency);
+	}
+
+	private void playChord(AudioClip[] chord)
+	{
+		for(int i = 0; i < chord.Length; i++)
+		{
+			audioSource.PlayOneShot(chord[i]);
+		}
+	}
+
+	private AudioClip[] ChordGen()
+	{
+		string[] chords = new string[4] { "C", "G7", "Am", "Dm6" };
+		string chordToMake = chords[Random.Range(0, chords.Length)];
+		AudioClip[] chord = new AudioClip[0];
+		if (chordToMake == "C")
+		{
+			chord = new AudioClip[3];
+			chord[0] = CreateToneAudioClip(Notes(-33+36));
+			chord[1] = CreateToneAudioClip(Notes(-29 + 36));
+			chord[2] = CreateToneAudioClip(Notes(-26 + 36));
+		}
+		else if(chordToMake == "G7")
+		{
+			chord = new AudioClip[4];
+			chord[0] = CreateToneAudioClip(Notes(-26 + 36));
+			chord[1] = CreateToneAudioClip(Notes(-34 + 36));
+			chord[2] = CreateToneAudioClip(Notes(-19 + 36));
+			chord[3] = CreateToneAudioClip(Notes(-16 + 36));
+		}
+		else if (chordToMake == "Am")
+		{
+			chord = new AudioClip[3];
+			chord[0] = CreateToneAudioClip(Notes(-36 + 36));
+			chord[1] = CreateToneAudioClip(Notes(-21 + 36));
+			chord[2] = CreateToneAudioClip(Notes(-17 + 36));
+		}
+		else if (chordToMake == "Dm6")
+		{
+			chord = new AudioClip[4];
+			chord[0] = CreateToneAudioClip(Notes(-31 + 36));
+			chord[1] = CreateToneAudioClip(Notes(-28 + 36));
+			chord[2] = CreateToneAudioClip(Notes(-36 + 36));
+			chord[3] = CreateToneAudioClip(Notes(-34 + 36));
+		}
+		return chord;
+	}
 
     
 #if UNITY_EDITOR
