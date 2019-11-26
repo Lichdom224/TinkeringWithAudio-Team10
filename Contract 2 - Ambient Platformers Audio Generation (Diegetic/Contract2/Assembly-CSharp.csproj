@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AudioManager.cs" />
-    <Compile Include="Assets\Scripts\Sound Library\Sound.cs" />
+    <Compile Include="Assets\Scripts\Sound.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/meshuser/Documents/Uni Stuff/TinkeringWithAudio-Team10/Contract 2 - Ambient Platformers Audio Generation (Diegetic/Contract2/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
