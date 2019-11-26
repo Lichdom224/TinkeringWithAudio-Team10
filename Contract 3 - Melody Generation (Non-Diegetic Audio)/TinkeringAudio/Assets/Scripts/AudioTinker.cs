@@ -17,7 +17,7 @@ Script template provided in Comp120 Tinkering Audio lectures was used for basic 
 This script should be attatched to a gameObject with the audio source component.
 The purpose of this script is to make a melody using elements of procedural generation to control the output of tones and chords through samples, output as audio clips.
 CreateToneAudioClip() function was taken from the template for tinkering audio and modified for use inside of this project to fit the contract's needs.
-The script uses public variables for sampleDurationSeconds and octave to allow for manipulation outside of the source code. Both of these variables can be changed in the inspector.
+The script uses public variables for sampleDurationSeconds and octave to allow for manipulation outside of the source code. Both of these variables can be changed using the inspector.
 The script makes use of programming paradigms to create algorithms that are appropriate for use in the generation of a music track.
 */
 
