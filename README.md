@@ -1,8 +1,11 @@
 # TinkeringWithAudio-Team10
-Repository for version control in tinkering audio assignment for team 10
+Repository for version control in tinkering audio assignment for Team 10
 
-We are happy for this to be used for education perpouses so we are using the GPL 3.0 liscence to give people aceess to our solutions without the restrictions of copywrite. As this is not being produced for a company we are not under any obligations to keep this work privte.
+## License Declaration
+We are happy for our work to be used for educational purposes so we are using the GPL 3.0 license to give people access to our solutions without the restrictions of copyright laws and regulations. As these contracts are not being produced for a company, we are not under any contractual obligations to keep this work privated and therefore are at no risk when sharing our work. However, under GPL 3.0 license, our original work must still be included in any redistribution of the work as well as changes being disclosed, meaning that we are still credited for our work.
 
-Lichdom224 - Nicholas Lane - Contract 2
+## Work Declaration
+#### Lichdom224 - Nicholas Lane - Contract 2
 
-ColeGGilbert - Cole Gilbert - Contract 3
+#### ColeGGilbert - Cole Gilbert - Contract 3 Melody Generation (Non-Diegetic Audio)
+The task is to create a tool which will procedurally generate and export a music track for a game. The tool will use tones and samples to create a music track that sounds good when put together, however will not be overly complex. The outputs of the contract will be simplistic and will use a large amount of random choice for music generation.
