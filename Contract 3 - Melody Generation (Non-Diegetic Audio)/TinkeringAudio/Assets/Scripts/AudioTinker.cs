@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 //using NaughtyAttributes;
 using UnityEngine;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -34,7 +33,13 @@ public class AudioTinker : MonoBehaviour {
 	private float melodyRestDelay;
 	private float melodyRest;
 	private int lastMelodyNote = 2;
+	public int totalSamplesMade;
 	private float chordDelay;
+	private int currentChordSize;
+	private AudioClip[] currentChordClips = new AudioClip[3];
+	private AudioClip combinedSong;
+	private List<AudioClip> generatedClips = new List<AudioClip>();
+	private float songEndTimer = 5;
 
 	// Octave can be changed in inspector or changed using Up and Down arrows
 	// Octave affects the frequency that each note is generated as
@@ -45,10 +50,9 @@ public class AudioTinker : MonoBehaviour {
 	// sampleDurationSeconds affects how long each chord will last
 	// Default is set to 2 so that chord changes are not overly common so not to drown out the melody
 	public int sampleDurationSeconds = 2;
-    
 
-    // Start is called before the first frame update
-    void Start() {
+	// Start is called before the first frame update
+	void Start() {
 		// GetComponent<AudioSource>() will return the audioSource attatched to the gameObject
 		// audioSource will be used to Play out sounds in the scene
         audioSource = GetComponent<AudioSource>();
@@ -123,6 +127,31 @@ public class AudioTinker : MonoBehaviour {
 		{
 			melodyRestDelay -= Time.deltaTime;
 		}
+
+		if(songEndTimer <= 0)
+		{
+			combinedSong = AudioClip.Create("MySong", totalSamplesMade, 1, 44100, false);
+			float[] samples = new float[totalSamplesMade];
+			int totalSamplesAdded = 0;
+			
+			for (int i = 0; i < generatedClips.Count; i++)
+			{
+				float[] samplesToAdd = new float[generatedClips[i].samples];
+				generatedClips[i].GetData(samplesToAdd, 0);
+				for(int j = 0; j < samplesToAdd.Length; j++)
+				{
+					samples[j + totalSamplesAdded] = samplesToAdd[j];
+				}
+				totalSamplesAdded += generatedClips[i].samples;
+			}
+			combinedSong.SetData(samples, 0);
+			SaveWavFile();
+			songEndTimer = 5;
+		}
+		else
+		{
+			songEndTimer -= Time.deltaTime;
+		}
 	}
     
 
@@ -163,9 +192,23 @@ public class AudioTinker : MonoBehaviour {
 
 		// Assign all of the generated samples to local audioClip, then return
 		audioClip.SetData(samples, 0);
+		if (halfSampleSize)
+		{
+			generatedClips.Add(audioClip);
+		}
+		else
+		{
+			currentChordClips[currentChordSize] = audioClip;
+			currentChordSize++;
+			
+			if(currentChordSize == 3)
+			{
+				generatedClips.Add(CombineChordTones());
+			}
+		}
+		totalSamplesMade += audioClip.samples;
         return audioClip;
     }
-
 
 	// Notes() is used to create and return the frequency for a passed note number
 	private float Notes(float noteNum)
@@ -174,6 +217,35 @@ public class AudioTinker : MonoBehaviour {
 		return (frequency);
 	}
 
+
+	private AudioClip CombineChordTones()
+	{
+		int chordSampleSize = 0;
+		for(int i = 0; i < 3; i++)
+		{
+			chordSampleSize += currentChordClips[i].samples;
+		}
+		AudioClip combinedChord = AudioClip.Create("chord", chordSampleSize, 1, 44100, false);
+
+		float[] samples = new float[chordSampleSize];
+		int totalSamplesAdded = 0;
+
+		for (int i = 0; i < currentChordClips.Length; i++)
+		{
+			float[] samplesToAdd = new float[currentChordClips[i].samples];
+			currentChordClips[i].GetData(samplesToAdd, 0);
+			for (int j = 0; j < samplesToAdd.Length; j++)
+			{
+				samples[j + totalSamplesAdded] = samplesToAdd[j];
+			}
+			totalSamplesAdded += currentChordClips[i].samples;
+		}
+
+		currentChordSize = 0;
+
+		combinedChord.SetData(samples, 0);
+		return combinedChord;
+	}
 
 	// playChord() is called after generating a chord and is used to play every note from the chord
 	private void PlayChord(AudioClip[] chord)
@@ -301,8 +373,7 @@ public class AudioTinker : MonoBehaviour {
     //[Button("Save Wav file")]
     private void SaveWavFile() {
         string path = EditorUtility.SaveFilePanel("Where do you want the wav file to go?", "", "", "wav");
-        var audioClip = CreateToneAudioClip(1500, sampleDurationSeconds, false);
-        SaveWavUtil.Save(path, audioClip);
+        SaveWavUtil.Save(path, combinedSong);
     }
 #endif
 }
