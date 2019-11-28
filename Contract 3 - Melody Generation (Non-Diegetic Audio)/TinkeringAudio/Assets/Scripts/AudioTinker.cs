@@ -33,7 +33,7 @@ public class AudioTinker : MonoBehaviour {
 	private float melodyPlayDelay;
 	private float melodyRestDelay;
 	private float melodyRest;
-	private int lastMelodyNote = -29;
+	private int lastMelodyNote = 2;
 	private float chordDelay;
 
 	// Octave can be changed in inspector or changed using Up and Down arrows
@@ -279,13 +279,21 @@ public class AudioTinker : MonoBehaviour {
 
 	private AudioClip MelodyGen()
 	{
-		int modifyNoteNumber = Random.Range(-2, 3);
+		/*int modifyNoteNumber = Random.Range(-2, 3);
 		while (modifyNoteNumber == 0)
 		{
 			modifyNoteNumber = Random.Range(-2, 3);
 		}
 		lastMelodyNote = Mathf.Clamp(lastMelodyNote + modifyNoteNumber, -36, -21);
-		return CreateToneAudioClip(Notes(lastMelodyNote + ((octave + 0.65f) * 12)), 1, true);
+		return CreateToneAudioClip(Notes(lastMelodyNote + ((octave + 0.65f) * 12)), 1, true);*/
+		int[] notesForMelody = new int[5] { -33, -31, -29, -26, -24 };
+		int modifyNoteNumber = Random.Range(-2, 3);
+		while (modifyNoteNumber == 0)
+		{
+			modifyNoteNumber = Random.Range(-2, 3);
+		}
+		lastMelodyNote = Mathf.Clamp(lastMelodyNote + modifyNoteNumber, 0, 4);
+		return CreateToneAudioClip(Notes(notesForMelody[lastMelodyNote] + ((octave + 1) * 12)), 1, true);
 	}
 
     
