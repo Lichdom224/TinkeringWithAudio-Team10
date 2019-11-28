@@ -39,7 +39,7 @@ public class AudioTinker : MonoBehaviour {
 	private AudioClip[] currentChordClips = new AudioClip[3];
 	private AudioClip combinedSong;
 	private List<AudioClip> generatedClips = new List<AudioClip>();
-	private float songEndTimer = 5;
+	private float songEndTimer = 12;
 
 	// Octave can be changed in inspector or changed using Up and Down arrows
 	// Octave affects the frequency that each note is generated as
@@ -146,7 +146,7 @@ public class AudioTinker : MonoBehaviour {
 			}
 			combinedSong.SetData(samples, 0);
 			SaveWavFile();
-			songEndTimer = 5;
+			songEndTimer = 12;
 		}
 		else
 		{
@@ -192,7 +192,7 @@ public class AudioTinker : MonoBehaviour {
 
 		// Assign all of the generated samples to local audioClip, then return
 		audioClip.SetData(samples, 0);
-		if (halfSampleSize)
+		/*if (halfSampleSize)
 		{
 			generatedClips.Add(audioClip);
 		}
@@ -205,7 +205,8 @@ public class AudioTinker : MonoBehaviour {
 			{
 				generatedClips.Add(CombineChordTones());
 			}
-		}
+		}*/
+		generatedClips.Add(audioClip);
 		totalSamplesMade += audioClip.samples;
         return audioClip;
     }
@@ -319,29 +320,37 @@ public class AudioTinker : MonoBehaviour {
 		// Statements check which chord was randomly chosen and chord is assigned each AudioClip before being returned
 		if (chordToMake == "Cm")
 		{
-			chord = new AudioClip[3];
+			chord = new AudioClip[1];
 
 			// Notes() here takes the note number and returns a frequency for use in CreateToneAudioClip()
 			// '+ (octave * 12)' is used to determine the current octave that the notes are being generated in
-			chord[0] = CreateToneAudioClip(Notes(-33 + (octave * 12)), sampleDurationSeconds, false);
-			chord[1] = CreateToneAudioClip(Notes(-29 + (octave * 12)), sampleDurationSeconds, false);
-			chord[2] = CreateToneAudioClip(Notes(-26 + (octave * 12)), sampleDurationSeconds, false);
+			float totalFreq = (Notes(-33 + (octave * 12)) + Notes(-29 + (octave * 12)) + Notes(-26 + (octave * 12)))/3;
+			chord[0] = CreateToneAudioClip(totalFreq, sampleDurationSeconds, false);
+			//chord[0] = CreateToneAudioClip(Notes(-33 + (octave * 12)), sampleDurationSeconds, false);
+			//chord[1] = CreateToneAudioClip(Notes(-29 + (octave * 12)), sampleDurationSeconds, false);
+			//chord[2] = CreateToneAudioClip(Notes(-26 + (octave * 12)), sampleDurationSeconds, false);
 		}
 		else if(chordToMake == "Fm")
 		{
-			chord = new AudioClip[3];
+			chord = new AudioClip[1];
 
-			chord[0] = CreateToneAudioClip(Notes(-28 + (octave * 12)), sampleDurationSeconds, false);
-			chord[1] = CreateToneAudioClip(Notes(-36 + (octave * 12)), sampleDurationSeconds, false);
-			chord[2] = CreateToneAudioClip(Notes(-33 + (octave * 12)), sampleDurationSeconds, false);
+
+			float totalFreq = (Notes(-28 + (octave * 12)) + Notes(-36 + (octave * 12)) + Notes(-33 + (octave * 12))) / 3;
+			chord[0] = CreateToneAudioClip(totalFreq, sampleDurationSeconds, false);
+			//chord[0] = CreateToneAudioClip(Notes(-28 + (octave * 12)), sampleDurationSeconds, false);
+			//chord[1] = CreateToneAudioClip(Notes(-36 + (octave * 12)), sampleDurationSeconds, false);
+			//chord[2] = CreateToneAudioClip(Notes(-33 + (octave * 12)), sampleDurationSeconds, false);
 		}
 		else if (chordToMake == "Gm")
 		{
-			chord = new AudioClip[3];
+			chord = new AudioClip[1];
 
-			chord[0] = CreateToneAudioClip(Notes(-26 + (octave * 12)), sampleDurationSeconds, false);
-			chord[1] = CreateToneAudioClip(Notes(-34 + (octave * 12)), sampleDurationSeconds, false);
-			chord[2] = CreateToneAudioClip(Notes(-31 + (octave * 12)), sampleDurationSeconds, false);
+
+			float totalFreq = (Notes(-26 + (octave * 12)) + Notes(-34 + (octave * 12)) + Notes(-31 + (octave * 12))) / 3;
+			chord[0] = CreateToneAudioClip(totalFreq, sampleDurationSeconds, false);
+			//chord[0] = CreateToneAudioClip(Notes(-26 + (octave * 12)), sampleDurationSeconds, false);
+			//chord[1] = CreateToneAudioClip(Notes(-34 + (octave * 12)), sampleDurationSeconds, false);
+			//chord[2] = CreateToneAudioClip(Notes(-31 + (octave * 12)), sampleDurationSeconds, false);
 		}
 		#endregion
 
