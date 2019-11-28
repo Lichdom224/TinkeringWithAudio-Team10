@@ -21,6 +21,7 @@ The script uses public variables for sampleDurationSeconds and octave to allow f
 The script makes use of programming paradigms to create algorithms that are appropriate for use in the generation of a music track.
 */
 
+[RequireComponent(typeof(AudioSource))]
 public class AudioTinker : MonoBehaviour {
 
 	// Initialising variables
@@ -29,6 +30,7 @@ public class AudioTinker : MonoBehaviour {
 
 	private float freq = 50;
 	private string lastChord = "";
+	private float melodyDelay;
 
 	// Octave can be changed in inspector or changed using Up and Down arrows
 	// Octave affects the frequency that each note is generated as
@@ -48,7 +50,7 @@ public class AudioTinker : MonoBehaviour {
         audioSource = GetComponent<AudioSource>();
 
 		// audioClip is created using default frequency to begin with
-        audioClip = CreateToneAudioClip(freq, sampleDurationSeconds);
+        audioClip = CreateToneAudioClip(freq, sampleDurationSeconds, false);
 
 		//PlayOutAudio();
 	}
@@ -92,29 +94,56 @@ public class AudioTinker : MonoBehaviour {
 		{
 			octave--;
 		}
+
+		if(melodyDelay <= 0)
+		{
+			audioSource.PlayOneShot(MelodyGen());
+			melodyDelay = Random.Range(0f, 2f);
+		}
+		else
+		{
+			melodyDelay -= Time.deltaTime;
+		}
 	}
     
 
 	// CreateToneAudioClip() is used to create a sound wave using a passed frequency
-    private AudioClip CreateToneAudioClip(float frequency, int seconds) {
+    private AudioClip CreateToneAudioClip(float frequency, int seconds, bool halfSampleSize) {
 		// sampleDurationSecs determines how long the wave will play for, value 2 is chosen as default so that the chord changes don't drown out the melody
         int sampleDurationSecs = seconds;
         int sampleRate = 44100; // 44100 is default for music
         int sampleLength = sampleRate * sampleDurationSecs;
         float maxValue = 1f / 4f;
-        
-        var audioClip = AudioClip.Create("tone", sampleLength, 1, sampleRate, false);
-        
+
+		AudioClip audioClip;
+
 		// Every sample is assigned data which is assigned to the local audioClip and then returned at the end of the function
-        float[] samples = new float[sampleLength];
-        for (var i = 0; i < sampleLength; i++) {
-            float s = Mathf.Sin(2.0f * Mathf.PI * frequency * ((float) i / (float) sampleRate));
-            float v = s * maxValue;
-            samples[i] = v;
-        }
+		float[] samples;
+		if (halfSampleSize)
+		{
+			samples = new float[sampleLength/2];
+			audioClip = AudioClip.Create("tone", sampleLength / 2, 1, sampleRate, false);
+			for (var i = 0; i < sampleLength/2; i++)
+			{
+				float s = Mathf.Sin(2.0f * Mathf.PI * frequency * ((float)i / (float)sampleRate));
+				float v = s * maxValue;
+				samples[i] = v;
+			}
+		}
+		else
+		{
+			samples = new float[sampleLength];
+			audioClip = AudioClip.Create("tone", sampleLength, 1, sampleRate, false);
+			for (var i = 0; i < sampleLength; i++)
+			{
+				float s = Mathf.Sin(2.0f * Mathf.PI * frequency * ((float)i / (float)sampleRate));
+				float v = s * maxValue;
+				samples[i] = v;
+			}
+		}
 
 		// Assign all of the generated samples to local audioClip, then return
-        audioClip.SetData(samples, 0);
+		audioClip.SetData(samples, 0);
         return audioClip;
     }
 
@@ -164,35 +193,35 @@ public class AudioTinker : MonoBehaviour {
 		{
 			chord = new AudioClip[3];
 
-			chord[0] = CreateToneAudioClip(Notes(-33 + (octave*12)), sampleDurationSeconds);
-			chord[1] = CreateToneAudioClip(Notes(-29 + (octave*12)), sampleDurationSeconds);
-			chord[2] = CreateToneAudioClip(Notes(-26 + (octave*12)), sampleDurationSeconds);
+			chord[0] = CreateToneAudioClip(Notes(-33 + (octave*12)), sampleDurationSeconds, false);
+			chord[1] = CreateToneAudioClip(Notes(-29 + (octave*12)), sampleDurationSeconds, false);
+			chord[2] = CreateToneAudioClip(Notes(-26 + (octave*12)), sampleDurationSeconds, false);
 		}
 		else if(chordToMake == "G7")
 		{
 			chord = new AudioClip[4];
 
-			chord[0] = CreateToneAudioClip(Notes(-26 + (octave*12)), sampleDurationSeconds);
-			chord[1] = CreateToneAudioClip(Notes(-34 + (octave*12)), sampleDurationSeconds);
-			chord[2] = CreateToneAudioClip(Notes(-19 + (octave*12)), sampleDurationSeconds);
-			chord[3] = CreateToneAudioClip(Notes(-16 + (octave*12)), sampleDurationSeconds);
+			chord[0] = CreateToneAudioClip(Notes(-26 + (octave*12)), sampleDurationSeconds, false);
+			chord[1] = CreateToneAudioClip(Notes(-34 + (octave*12)), sampleDurationSeconds, false);
+			chord[2] = CreateToneAudioClip(Notes(-19 + (octave*12)), sampleDurationSeconds, false);
+			chord[3] = CreateToneAudioClip(Notes(-16 + (octave*12)), sampleDurationSeconds, false);
 		}
 		else if (chordToMake == "Am")
 		{
 			chord = new AudioClip[3];
 
-			chord[0] = CreateToneAudioClip(Notes(-36 + (octave*12)), sampleDurationSeconds);
-			chord[1] = CreateToneAudioClip(Notes(-21 + (octave*12)), sampleDurationSeconds);
-			chord[2] = CreateToneAudioClip(Notes(-17 + (octave*12)), sampleDurationSeconds);
+			chord[0] = CreateToneAudioClip(Notes(-36 + (octave*12)), sampleDurationSeconds, false);
+			chord[1] = CreateToneAudioClip(Notes(-21 + (octave*12)), sampleDurationSeconds, false);
+			chord[2] = CreateToneAudioClip(Notes(-17 + (octave*12)), sampleDurationSeconds, false);
 		}
 		else if (chordToMake == "Dm6")
 		{
 			chord = new AudioClip[4];
 
-			chord[0] = CreateToneAudioClip(Notes(-31 + (octave*12)), sampleDurationSeconds);
-			chord[1] = CreateToneAudioClip(Notes(-28 + (octave*12)), sampleDurationSeconds);
-			chord[2] = CreateToneAudioClip(Notes(-36 + (octave*12)), sampleDurationSeconds);
-			chord[3] = CreateToneAudioClip(Notes(-34 + (octave*12)), sampleDurationSeconds);
+			chord[0] = CreateToneAudioClip(Notes(-31 + (octave*12)), sampleDurationSeconds, false);
+			chord[1] = CreateToneAudioClip(Notes(-28 + (octave*12)), sampleDurationSeconds, false);
+			chord[2] = CreateToneAudioClip(Notes(-36 + (octave*12)), sampleDurationSeconds, false);
+			chord[3] = CreateToneAudioClip(Notes(-34 + (octave*12)), sampleDurationSeconds, false);
 		}*/
 		#endregion
 		#region Piano-C Major
@@ -203,25 +232,25 @@ public class AudioTinker : MonoBehaviour {
 
 			// Notes() here takes the note number and returns a frequency for use in CreateToneAudioClip()
 			// '+ (octave * 12)' is used to determine the current octave that the notes are being generated in
-			chord[0] = CreateToneAudioClip(Notes(-33 + (octave * 12)), sampleDurationSeconds);
-			chord[1] = CreateToneAudioClip(Notes(-29 + (octave * 12)), sampleDurationSeconds);
-			chord[2] = CreateToneAudioClip(Notes(-26 + (octave * 12)), sampleDurationSeconds);
+			chord[0] = CreateToneAudioClip(Notes(-33 + (octave * 12)), sampleDurationSeconds, false);
+			chord[1] = CreateToneAudioClip(Notes(-29 + (octave * 12)), sampleDurationSeconds, false);
+			chord[2] = CreateToneAudioClip(Notes(-26 + (octave * 12)), sampleDurationSeconds, false);
 		}
 		else if(chordToMake == "Fm")
 		{
 			chord = new AudioClip[3];
 
-			chord[0] = CreateToneAudioClip(Notes(-28 + (octave * 12)), sampleDurationSeconds);
-			chord[1] = CreateToneAudioClip(Notes(-36 + (octave * 12)), sampleDurationSeconds);
-			chord[2] = CreateToneAudioClip(Notes(-33 + (octave * 12)), sampleDurationSeconds);
+			chord[0] = CreateToneAudioClip(Notes(-28 + (octave * 12)), sampleDurationSeconds, false);
+			chord[1] = CreateToneAudioClip(Notes(-36 + (octave * 12)), sampleDurationSeconds, false);
+			chord[2] = CreateToneAudioClip(Notes(-33 + (octave * 12)), sampleDurationSeconds, false);
 		}
 		else if (chordToMake == "Gm")
 		{
 			chord = new AudioClip[3];
 
-			chord[0] = CreateToneAudioClip(Notes(-26 + (octave * 12)), sampleDurationSeconds);
-			chord[1] = CreateToneAudioClip(Notes(-34 + (octave * 12)), sampleDurationSeconds);
-			chord[2] = CreateToneAudioClip(Notes(-31 + (octave * 12)), sampleDurationSeconds);
+			chord[0] = CreateToneAudioClip(Notes(-26 + (octave * 12)), sampleDurationSeconds, false);
+			chord[1] = CreateToneAudioClip(Notes(-34 + (octave * 12)), sampleDurationSeconds, false);
+			chord[2] = CreateToneAudioClip(Notes(-31 + (octave * 12)), sampleDurationSeconds, false);
 		}
 		#endregion
 
@@ -229,12 +258,19 @@ public class AudioTinker : MonoBehaviour {
 		return chord;
 	}
 
+	private AudioClip MelodyGen()
+	{
+		AudioClip tone;
+		tone = CreateToneAudioClip(Notes(Random.Range(-36,-21)+(octave*12)), 1, true);
+		return tone;
+	}
+
     
 #if UNITY_EDITOR
     //[Button("Save Wav file")]
     private void SaveWavFile() {
         string path = EditorUtility.SaveFilePanel("Where do you want the wav file to go?", "", "", "wav");
-        var audioClip = CreateToneAudioClip(1500, sampleDurationSeconds);
+        var audioClip = CreateToneAudioClip(1500, sampleDurationSeconds, false);
         SaveWavUtil.Save(path, audioClip);
     }
 #endif
