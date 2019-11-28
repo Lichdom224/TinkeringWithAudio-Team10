@@ -30,7 +30,11 @@ public class AudioTinker : MonoBehaviour {
 
 	private float freq = 50;
 	private string lastChord = "";
-	private float melodyDelay;
+	private float melodyPlayDelay;
+	private float melodyRestDelay;
+	private float melodyRest;
+	private int lastMelodyNote = -29;
+	private float chordDelay;
 
 	// Octave can be changed in inspector or changed using Up and Down arrows
 	// Octave affects the frequency that each note is generated as
@@ -72,15 +76,20 @@ public class AudioTinker : MonoBehaviour {
 	void Update()
 	{
 		// If there is nothing playing on the audio source, generate and play a random chord
-		if (!audioSource.isPlaying)
+		if (chordDelay <= 0)
 		{
 			PlayChord(ChordGen());
+			chordDelay = 2f;
 
 			#region TestCode - Random Increasing Frequency
 			/*freq += Random.Range(1, 200);
 			audioClip = CreateToneAudioClip(freq);
 			audioSource.PlayOneShot(audioClip);*/
 			#endregion
+		}
+		else
+		{
+			chordDelay -= Time.deltaTime;
 		}
 
 		// Checking inputs for up and down arrows
@@ -95,14 +104,24 @@ public class AudioTinker : MonoBehaviour {
 			octave--;
 		}
 
-		if(melodyDelay <= 0)
+		if(melodyRest <= 0.6f && melodyPlayDelay <= 0)
 		{
 			audioSource.PlayOneShot(MelodyGen());
-			melodyDelay = Random.Range(0f, 2f);
+			melodyPlayDelay = Random.Range(0.1f, 1f);
+		}
+		else if(melodyPlayDelay > 0)
+		{
+			melodyPlayDelay -= Time.deltaTime;
+		}
+
+		if(melodyRestDelay <= 0)
+		{
+			melodyRest = Random.Range(0f, 1f);
+			melodyRestDelay = Random.Range(1f, 3f);
 		}
 		else
 		{
-			melodyDelay -= Time.deltaTime;
+			melodyRestDelay -= Time.deltaTime;
 		}
 	}
     
@@ -260,9 +279,13 @@ public class AudioTinker : MonoBehaviour {
 
 	private AudioClip MelodyGen()
 	{
-		AudioClip tone;
-		tone = CreateToneAudioClip(Notes(Random.Range(-36,-21)+(octave*12)), 1, true);
-		return tone;
+		int modifyNoteNumber = Random.Range(-2, 3);
+		while (modifyNoteNumber == 0)
+		{
+			modifyNoteNumber = Random.Range(-2, 3);
+		}
+		lastMelodyNote = Mathf.Clamp(lastMelodyNote + modifyNoteNumber, -36, -21);
+		return CreateToneAudioClip(Notes(lastMelodyNote + ((octave + 0.65f) * 12)), 1, true);
 	}
 
     
