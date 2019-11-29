@@ -49,7 +49,7 @@ public class AudioTinker : MonoBehaviour {
 
 	// melodyRestChance determines the chance of the melody taking a break
 	[Range(0.0f, 1f)]
-	public float melodyRestChance;
+	public float melodyRestChance = 0.4f;
 	private float melodyRest;
 
 	// Saves the last melody note to stop duplication of notes
@@ -134,7 +134,7 @@ public class AudioTinker : MonoBehaviour {
 		// Melody timing is processed here and is used to determine whether the next note should be played or not
 		// melodyRest is used to create a break from melody to stop from over use of melody notes
 		// melodyPlayDelay is used to create a small gap between tones, giving them a chance to finish playing before the next note plays
-		if(melodyRest <= melodyRestChance && melodyPlayDelay <= 0 && toggleMelody)
+		if(melodyRest >= melodyRestChance && melodyPlayDelay <= 0 && toggleMelody)
 		{
 			// Generates and plays the next note
 			PlayOutAudio(MelodyGen());
