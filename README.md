@@ -12,3 +12,5 @@ We are happy for our work to be used for educational purposes so we are using th
 
 #### ColeGGilbert - Cole Gilbert - Contract 3 Melody Generation (Non-Diegetic Audio)
 The task is to create a tool which will procedurally generate and export a music track for a game. The tool will use tones and samples to create a music track that sounds good when put together, however will not be overly complex. The outputs of the contract will be simplistic and will use a large amount of random choice for music generation.
+
+The work completed by Nicholas and Cole are of their own intellectual property and any and all references to other IP is declared in both this Readme.md and included in the source code. The work of Nicholas and Cole is under protection of GPL 3.0 licensing in which reference and correct authorship must be declared if the code is used in other projects.
