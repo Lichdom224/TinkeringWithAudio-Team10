@@ -10,6 +10,11 @@ We are happy for our work to be used for educational purposes so we are using th
 ## Work Declaration
 #### Lichdom224 - Nicholas Lane - Contract 2
 
+Turorial used -https://www.youtube.com/watch?v=6OT43pvUyfY
+Sounds used
+-https://freesound.org/people/RSilveira_88/sounds/216210/
+-
+
 #### ColeGGilbert - Cole Gilbert - Contract 3 Melody Generation (Non-Diegetic Audio)
 The task is to create a tool which will procedurally generate and export a music track for a game. The tool will use tones and samples to create a music track that sounds good when put together, however will not be overly complex. The outputs of the contract will be simplistic and will use a large amount of random choice for music generation.
 
