@@ -1,52 +1,34 @@
 ﻿using UnityEngine.Audio;
-using UnityEngine.UI;
 using UnityEngine;
+using System;
 
-public class AudioManager : MonoBehaviour {
+public class AudioManager : MonoBehaviour{
 
-    //Set the sound array
+
     public Sound[] sounds;
 
-    //Boolian for if the sound will be active
-    public bool IsActive;
+    void Awake(){
+        foreach(Sound s in sounds)
+        {
+            s.source = gameObject.AddComponent<AudioSource>();
+            s.source.clip = s.clip;
 
-    //Set public Variables for editing the sound
-    public float Volume;
-    public float Frequency;
-    public float Pitch;
-
-    //Get Audio File from Audio Source component
-    void Awake()
-    {
-       gameObject.AddComponent<AudioSource>();
+            s.source.volume = s.volume;
+            s.source.pitch = s.pitch;
+            s.source.loop = s.loop;
+            s.source.mute = s.mute;
+        }
     }
-
-    void Update()
+    
+    public void Play (string name)
     {
-        AudioSource.volume = Volume;
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+            return;
+        s.source.Play();
     }
-
-    //Set and get the volume slider value to the volume
-    public void VolControl(float CurrentVol)
+    void Start()
     {
-        Volume = CurrentVol;
-    }
-
-    //Set and get the Frequency slider value to the Frequency
-    public void FreqControl(float CurrentFreq)
-    {
-        Frequency = CurrentFreq;
-    }
-
-    //Set and get the Pitch slider value to the Pitch
-    public void PitControl(float CurrentPit)
-    {
-        Pitch = CurrentPit;
-    }
-
-    //Reading the toggle to see if the sound is active
-    public void ToggleSound(bool ActiveToggle)
-    {
-        IsActive = ActiveToggle;
+        Play("Birds");
     }
 }
